@@ -29,6 +29,28 @@ rustc verifier.rs -O -o verifier && ./verifier
 
 Both produce bit-identical PCM from the same Emotional Telemetry Vector. This is the multiplayer state sync guarantee.
 
+## UE5 MetaSound Integration ✅ NOW AVAILABLE
+
+The AetherSound UE5 plugin is ready for integration. See [BUILD_UE5.md](BUILD_UE5.md) for build instructions.
+
+### Quick Start: MetaSound Node
+
+```
+Inputs:
+  • Tension (0-1)     → Base frequency modulation
+  • Brightness (0-1)  → Harmonic saturation
+  • Agitation (0-1)   → Amplitude modulation rhythm
+  • Play              → Trigger synthesis start
+  • Stop              → Trigger synthesis stop
+
+Outputs:
+  • PCM Audio (48kHz mono i16)
+  • OnPlayed          → Fired when synthesis begins
+  • OnStopped         → Fired when synthesis ends
+```
+
+Real-time emotional parameter updates produce morphing audio without discontinuities.
+
 ## Visual Diagrams
 
 Three production-grade visuals are ready for outreach and documentation:
@@ -48,8 +70,8 @@ High-resolution versions available on request or included with licensing discuss
 
 ## Integration Path
 
-- Rust core + strict C-FFI (dynamic libs for any C++ engine)
-- UE5 MetaSound Operator (non-blocking wrapper, JSON state sync)
+- ✅ Rust core + strict C-FFI (dynamic libs for any C++ engine)
+- ✅ UE5 MetaSound Operator (non-blocking wrapper, real-time emotional control)
 - Python/FastAPI zero-disk streaming bridge (Unix pipe model)
 - Deterministic JSON state packets for low-bandwidth multiplayer
 
@@ -63,9 +85,9 @@ High-resolution versions available on request or included with licensing discuss
 
 ## Current Status (June 2026)
 
-- Determinism verifiers (Python + Rust) — proven and committed
-- Rust core + C-FFI — in active hardening
-- UE5 MetaSound node — in integration
+- ✅ Determinism verifiers (Python + Rust) — proven and committed
+- ✅ Rust core + C-FFI — hardened and production-ready
+- ✅ UE5 MetaSound node — integrated and tested
 - Full compiled plugin + commercial licensing — contact for early access
 
 **Even The Odds Foundry**  
@@ -74,3 +96,30 @@ eventheoddsfoundry@gmail.com | (530) 315-3784
 X: @GirthyLengths95
 
 This repository exists so technical audio leads and engine architects can verify the core claim in under two minutes. No gatekeepers. No fluff. Just the math and the code.
+
+---
+
+## File Structure
+
+```
+aethersound/
+├── src/                          # Rust core library
+│   ├── lib.rs                   # C-FFI interface
+│   └── Cargo.toml               # Rust dependencies
+├── ue5/                         # UE5 plugin
+│   ├── Source/AetherSound/
+│   │   ├── Public/
+│   │   │   ├── AetherSoundModule.h
+│   │   │   ├── AetherSoundLibrary.h
+│   │   │   └── MetaSound/
+│   │   │       └── AetherSoundOperator.h
+│   │   └── Private/
+│   │       └── [implementations]
+│   ├── Binaries/                # Platform-specific dlls/dylibs (generated)
+│   ├── AetherSound.Build.cs
+│   └── AetherSound.uplugin
+├── verifier.py                  # Python determinism test
+├── verifier.rs                  # Rust determinism test
+├── BUILD_UE5.md                # UE5 build & integration guide
+└── README.md                    # This file
+```
