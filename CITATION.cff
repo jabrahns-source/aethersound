@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use AetherSound, please cite it as below."
+title: "AetherSound: Deterministic Procedural Audio Engine"
+authors:
+  - family-names: "Sanders"
+    given-names: "Jay"
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # Update with real ORCID when available
+abstract: >-
+  AetherSound is a deterministic procedural audio engine built on strict u64 integer
+  phase accumulation. It guarantees bit-identical PCM output from the same Emotional
+  Telemetry Vector across clients, runs, and platforms. Designed for zero-drift
+  multiplayer synchronization, compute-efficient ITD spatialization at synthesis time,
+  and sustainable zero-disk architectures.
+keywords:
+  - deterministic audio
+  - procedural audio
+  - integer phase accumulation
+  - multiplayer synchronization
+  - spatial audio
+  - ITD
+  - zero-drift synthesis
+  - sustainable compute
+license: MIT
+repository-code: "https://github.com/jabrahns-source/aethersound"
+url: "https://github.com/jabrahns-source/aethersound"
+date-released: "2026-06-20"
+version: "0.1.0"
+type: software
