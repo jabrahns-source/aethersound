@@ -1,125 +1,104 @@
-# AetherSound — Deterministic Procedural Audio Core
+# AetherSound
 
-**100% deterministic audio synthesis for multiplayer and spatial environments.**
+**Deterministic Procedural Audio Engine** — Bit-identical synthesis for multiplayer, spatial, and sustainable compute.
 
-Integer phase accumulation (u64 wrapping) eliminates stochastic drift across clients, runs, and platforms. Same Emotional Telemetry Vector → bit-identical PCM output every time.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Rust](https://img.shields.io/badge/Rust-1.70%2B-orange?logo=rust)](https://www.rust-lang.org/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
+[![UE5](https://img.shields.io/badge/UE5-MetaSound%20Plugin-5C5CFF?logo=unrealengine)](https://www.unrealengine.com/)
 
-This is the foundation for zero-drift multiplayer audio, compute-efficient ITD spatialization at synthesis time, and zero-disk procedural generation.
+> Same Emotional Telemetry Vector → **bit-identical PCM** on every client, every run, every platform.
 
-## Core Guarantee (Verified)
+AetherSound eliminates stochastic drift in procedural audio using strict `u64` integer phase accumulation. It delivers zero-drift multiplayer synchronization, compute-efficient psychoacoustic spatialization (ITD at synthesis time), and a zero-disk architecture ideal for cloud and sustainable compute pipelines.
 
-### Python Verifier (Colab / zero install)
-Run `verifier.py`:
+## Quick Proof (Run This Now)
 
+**Python (zero install, works in Colab):**
 ```bash
 python verifier.py
 ```
-
-Expected:
+Expected output:
 ```
 Buffers are bit-identical: ✅ YES
 ```
 
-### Rust Verifier (production path)
-`verifier.rs` is the same logic in Rust. Compile and run:
-
+**Rust (production path):**
 ```bash
 rustc verifier.rs -O -o verifier && ./verifier
 ```
 
-Both produce bit-identical PCM from the same Emotional Telemetry Vector. This is the multiplayer state sync guarantee.
+Both produce identical 48 kHz mono i16 PCM from the same input vector. This is the multiplayer guarantee.
 
-## UE5 MetaSound Integration ✅ NOW AVAILABLE
+## Why It Matters
 
-The AetherSound UE5 plugin is ready for integration. See [BUILD_UE5.md](BUILD_UE5.md) for build instructions.
+| Use Case                    | Problem Solved                              | Business Impact                          |
+|-----------------------------|---------------------------------------------|------------------------------------------|
+| Competitive Multiplayer     | Audio desync & peeker's advantage           | Fairer matches, fewer player complaints  |
+| High-Fidelity Mobile        | Asset bloat + battery drain                 | Smaller downloads, longer sessions       |
+| VR / XR                     | Heavy convolution spatialization cost       | Better visuals + spatial audio together  |
+| Cloud / Sustainable Compute | Disk I/O + FPU power draw                   | Lower server costs + verifiable ESG data |
 
-### Quick Start: MetaSound Node
+## Key Technical Properties
 
-```
-Inputs:
-  • Tension (0-1)     → Base frequency modulation
-  • Brightness (0-1)  → Harmonic saturation
-  • Agitation (0-1)   → Amplitude modulation rhythm
-  • Play              → Trigger synthesis start
-  • Stop              → Trigger synthesis stop
-
-Outputs:
-  • PCM Audio (48kHz mono i16)
-  • OnPlayed          → Fired when synthesis begins
-  • OnStopped         → Fired when synthesis ends
-```
-
-Real-time emotional parameter updates produce morphing audio without discontinuities.
-
-## Visual Diagrams
-
-Three production-grade visuals are ready for outreach and documentation:
-
-1. **UE5 MetaSound Node** — Shows exactly how the custom AetherSound operator appears in Unreal Engine 5 with Tension/Brightness/Agitation inputs and PCM + JSON outputs.
-2. **Determinism Proof** — Side-by-side comparison: traditional IEEE 754 floating-point drift vs AetherSound u64 integer phase accumulation (with the exact formulas).
-3. **ITD Spatialization** — Psychoacoustic Interaural Time Difference generated at the oscillator level (Woodworth model, microsecond-precise, no convolution cost).
-
-High-resolution versions available on request or included with licensing discussions.
-
-## Technical Foundation
-
-- Master Integer Clock + u64 phase step: `ΔΦ = floor(f · 2⁶⁴ / fs)`
-- Phase update: `Φₙ = (Φₙ₋₁ + ΔΦ) mod 2⁶⁴`
-- Emotional Telemetry Vectors (tension, brightness, agitation) map directly to deterministic waveform parameters
-- ITD spatialization generated at synthesis time (no post-process convolution)
-
-## Integration Path
-
-- ✅ Rust core + strict C-FFI (dynamic libs for any C++ engine)
-- ✅ UE5 MetaSound Operator (non-blocking wrapper, real-time emotional control)
-- Python/FastAPI zero-disk streaming bridge (Unix pipe model)
-- Deterministic JSON state packets for low-bandwidth multiplayer
-
-## Why Studios Need This Now
-
-**Competitive Multiplayer (Riot, Epic, Respawn)**: Peeker's advantage and audio desync ruin fairness. One telemetry vector from the server renders identically on every client.
-
-**High-Fidelity Mobile (Tencent, NetEase, Supercell)**: Infinite variation, zero added .wav files, lower battery draw, stays under app store size caps.
-
-**VR / XR (Meta Reality Labs, Skydance)**: Accurate 3D spatial cues at wave generation time instead of expensive post-process HRTF convolution. Frees GPU/CPU for rendering.
+- **Deterministic by Design**: `u64` wrapping phase accumulation (`Φₙ = (Φₙ₋₁ + ΔΦ) mod 2⁶⁴`)
+- **Emotional Telemetry Vectors**: Tension, Brightness, Agitation map directly to waveform parameters
+- **ITD Spatialization at Source**: Microsecond-precise Interaural Time Differences generated during synthesis (no post-process)
+- **Zero-Disk Architecture**: Python/FastAPI + Rust pipe model for streaming PCM with minimal RAM/disk footprint
+- **Multi-Language Integration**: Strict C-FFI + UE5 MetaSound Operator
 
 ## Current Status (June 2026)
 
-- ✅ Determinism verifiers (Python + Rust) — proven and committed
-- ✅ Rust core + C-FFI — hardened and production-ready
-- ✅ UE5 MetaSound node — integrated and tested
-- Full compiled plugin + commercial licensing — contact for early access
+- ✅ Determinism verifiers (Python + Rust) — public and passing
+- ✅ Rust core + C-FFI — hardened
+- ✅ UE5 MetaSound Operator — integrated and tested
+- Full compiled plugin + commercial licensing — available for early access
+
+## Integration
+
+See `BUILD_UE5.md` for Unreal Engine 5 MetaSound plugin build and integration instructions.
+
+The engine exposes a simple JSON state interface for low-bandwidth multiplayer synchronization.
+
+## Repository Structure
+
+```
+aethersound/
+├── verifier.py                 # Python determinism proof
+├── verifier.rs                 # Rust determinism proof
+├── src/                        # Rust core + C-FFI
+├── ue5/                        # UE5 MetaSound plugin
+├── LICENSE
+├── .gitignore
+└── README.md
+```
+
+## Citation
+
+If you use AetherSound in academic work or reference it in proposals:
+
+```bibtex
+@software{aethersound2026,
+  author = {Jay Sanders},
+  title  = {AetherSound: Deterministic Procedural Audio Engine},
+  year   = {2026},
+  url    = {https://github.com/jabrahns-source/aethersound}
+}
+```
+
+## License
+
+MIT License — see [LICENSE](LICENSE) file.
+
+## Contact & Affiliation
 
 **Even The Odds Foundry**  
 Jay Sanders (Jacarri Sanders)  
 eventheoddsfoundry@gmail.com | (530) 315-3784  
 X: @GirthyLengths95
 
-This repository exists so technical audio leads and engine architects can verify the core claim in under two minutes. No gatekeepers. No fluff. Just the math and the code.
+This project exists to let technical audio leads and engine architects verify the core determinism claim in under two minutes. No gatekeepers. Verifiable math and code.
 
 ---
 
-## File Structure
-
-```
-aethersound/
-├── src/                          # Rust core library
-│   ├── lib.rs                   # C-FFI interface
-│   └── Cargo.toml               # Rust dependencies
-├── ue5/                         # UE5 plugin
-│   ├── Source/AetherSound/
-│   │   ├── Public/
-│   │   │   ├── AetherSoundModule.h
-│   │   │   ├── AetherSoundLibrary.h
-│   │   │   └── MetaSound/
-│   │   │       └── AetherSoundOperator.h
-│   │   └── Private/
-│   │       └── [implementations]
-│   ├── Binaries/                # Platform-specific dlls/dylibs (generated)
-│   ├── AetherSound.Build.cs
-│   └── AetherSound.uplugin
-├── verifier.py                  # Python determinism test
-├── verifier.rs                  # Rust determinism test
-├── BUILD_UE5.md                # UE5 build & integration guide
-└── README.md                    # This file
-```
+*Star this repo if you find the determinism guarantee useful.*
+*Issues and pull requests welcome.*
