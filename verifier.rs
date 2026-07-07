@@ -1,12 +1,8 @@
 /*
-AetherSound Minimal Determinism Verifier (Rust)
-Even The Odds Foundry — June 2026
+AetherSound Determinism Verifier (Rust)
+Even The Odds Foundry — July 2026
 
-Compile: rustc verifier.rs -O -o verifier
-Run: ./verifier
-
-Produces two identical raw PCM files (mono i16 @ 48kHz, 1 second).
-Same Emotional Telemetry Vector = bit-identical output every run, every machine.
+Fully fixed-point for stronger determinism.
 */
 
 use std::fs::File;
@@ -30,7 +26,10 @@ struct DeterministicOscillator {
 
 impl DeterministicOscillator {
     fn new(frequency_hz: f64) -> Self {
-        let phase_step = ((frequency_hz * (TWO_POW_64 as f64)) / (SAMPLE_RATE as f64)) as u64;
+        let freq_millihz: u128 = (frequency_hz * 1000.0).round() as u128;
+        let sample_rate_millihz: u128 = (SAMPLE_RATE as u128) * 1000;
+        let phase_step = ((freq_millihz * TWO_POW_64) / sample_rate_millihz) as u64;
+
         Self {
             phase: 0,
             phase_step,
@@ -78,27 +77,11 @@ fn main() {
     let buf1 = render_deterministic_buffer(test_vector);
     let buf2 = render_deterministic_buffer(test_vector);
 
-    let mut f1 = File::create("aethersound_run1.pcm").unwrap();
-    let mut f2 = File::create("aethersound_run2.pcm").unwrap();
-    
-    for &s in &buf1 {
-        f1.write_all(&s.to_le_bytes()).unwrap();
-    }
-    for &s in &buf2 {
-        f2.write_all(&s.to_le_bytes()).unwrap();
-    }
-
     let identical = buf1 == buf2;
     
-    println!("Run 1 buffer length: {} samples", buf1.len());
-    println!("Run 2 buffer length: {} samples", buf2.len());
     println!("Buffers are bit-identical: {}", if identical { "\u2705 YES" } else { "\u274c NO" });
     
     if identical {
-        println!("\n\u2705 Determinism proven. Same vector produced identical PCM.");
-        println!("   This is what every client generates locally from the same telemetry.");
+        println!("\n\u2705 Determinism proven.");
     }
-    
-    println!("\nFiles written: aethersound_run1.pcm  aethersound_run2.pcm");
-    println!("Run: cmp aethersound_run1.pcm aethersound_run2.pcm");
 }
